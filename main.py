@@ -23,10 +23,13 @@ font = pygame.font.SysFont(None, 36)
 
 solucao = []
 
-### ALGORITMO DE (EVOLUÇÃO DIFERENCIAL) ###
+# ALGORITMO DE EVOLUÇÃO DIFERENCIAL #
+
+# cria um indivíduo aleatório (uma possível solução com 8 colunas e linhas aleatórias)
 def criar_individuo():
     return [random.randint(0, 7) for _ in range(8)]
 
+# calcula o número de conflitos entre rainhas de uma solução (quanto menor, melhor)
 def fitness(individuo):
     conflitos = 0
     for i in range(8):
@@ -35,6 +38,7 @@ def fitness(individuo):
                 conflitos += 1
     return conflitos
 
+# gera um vetor mutado com base em três indivíduos diferentes, usando a estratégia de DE
 def mutacao_diferencial(a, b, c, F=0.8):
     mutado = []
     for i in range(8):
@@ -42,6 +46,7 @@ def mutacao_diferencial(a, b, c, F=0.8):
         mutado.append(max(0, min(7, valor)))  # limitar entre 0 e 7
     return mutado
 
+# faz o cruzamento binário entre o indivíduo mutado e o alvo
 def crossover_binario(mutado, alvo, CR=0.9):
     trial = []
     jrand = random.randint(0, 7)
@@ -52,6 +57,7 @@ def crossover_binario(mutado, alvo, CR=0.9):
             trial.append(alvo[i])
     return trial
 
+# executa o algoritmo de Evolução Diferencial
 def evolucao_diferencial():
     populacao = [criar_individuo() for _ in range(100)]
     for geracao in range(1000):
@@ -72,7 +78,9 @@ def evolucao_diferencial():
             return melhor
     return melhor  # retorna o melhor mesmo que não seja perfeito
 
-###INTERFACE GRÁFICA###
+# INTERFACE GRÁFICA #
+
+# desenha o tabuleiro 8x8 com padrão quadriculado
 def desenhar_tabuleiro():
     for linha in range(NUM_RAINHAS):
         for coluna in range(NUM_RAINHAS):
@@ -80,6 +88,7 @@ def desenhar_tabuleiro():
             rect = pygame.Rect(coluna * TAM_CELULA, linha * TAM_CELULA, TAM_CELULA, TAM_CELULA)
             pygame.draw.rect(screen, cor, rect)
 
+# desenha as rainhas vermelhas no tabuleiro
 def desenhar_rainhas():
     for coluna, linha in enumerate(solucao):
         center_x = coluna * TAM_CELULA + TAM_CELULA // 2
@@ -87,6 +96,7 @@ def desenhar_rainhas():
         radius = TAM_CELULA // 3
         pygame.draw.circle(screen, VERMELHO, (center_x, center_y), radius)
 
+# desenha o botão de "Gerar Nova Solução"
 def desenhar_botao():
     botao_largura = 290
     botao_altura = 40
@@ -99,6 +109,7 @@ def desenhar_botao():
     screen.blit(texto, texto_rect)
     return botao_rect
 
+# função principal que gerencia a janela e os eventos
 def main():
     global solucao
     clock = pygame.time.Clock()
@@ -119,5 +130,6 @@ def main():
         pygame.display.flip()
         clock.tick(60)
 
+# inicia o programa chamando a função principal
 if __name__ == "__main__":
     main()
